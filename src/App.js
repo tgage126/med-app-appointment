@@ -1,6 +1,7 @@
 import React from "react";
 import Calendar from "./components/Calendar";
 import store from './redux/store';
+import GetPatient from "./components/GetPatient";
 import {Provider} from 'react-redux';
 import {
   BrowserRouter as Router,
@@ -25,6 +26,7 @@ function App() {
             </Switch>
         </Router>
       </Provider>
+      <GetPatient></GetPatient>
     </RootContainer>
   );
 }
