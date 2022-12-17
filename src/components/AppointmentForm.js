@@ -6,6 +6,9 @@ import moment from "moment";
 import { useDispatch } from "react-redux";
 import { add_appointment } from "../redux/appointment/appointmentActions";
 import uuid from "react-uuid";
+
+//import GetPatient from "./GetPatient";
+
 import {
   FormWrapper,
   Header,
@@ -48,8 +51,20 @@ const AppointmentForm = ({ closeModal }) => {
       end: endDateTime,
       id: uuid()
     };
+    
     dispatch(add_appointment(appointmentInfo))
       .then(() => {
+        console.log("data: ", data);
+        const url = 'http://localhost:3001/appointment/add'
+        const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( appointmentInfo )
+        };
+        console.log("requestOptions: ", requestOptions);
+        fetch(url, requestOptions)
+        .then(response => console.log('Submitted successfully', response))
+        .catch(error => console.log('Form submit error', error))
         console.log("form data: ", appointmentInfo);
         // Check with localstorage data
         if ("appointments" in localStorage) {
@@ -81,50 +96,43 @@ const AppointmentForm = ({ closeModal }) => {
       });
   };
 
+
+
+    
+
   return (
     <FormWrapper>
       <Header>Create New Appointment</Header>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form  onSubmit={handleSubmit(onSubmit)}>
         <ListContainer>
           <ListItem>
-            <Label>Title</Label>
+            
+            <Label>Patient</Label>
             <Input
-              name="title"
+              name="patient"
               type="text"
-              placeholder="Appointment of..."
+              placeholder="Patient"
               required
-              {...register("title", {
-                required: true,
-                maxLength: 100
-              })}
-            />
-          </ListItem>
-          <ListItem>
-            <Label>Name</Label>
-            <Input
-              name="name"
-              type="text"
-              placeholder="Patient Name"
-              required
-              {...register("name", {
+              {...register("patient", {
                 required: true,
                 maxLength: 45
               })}
             />
           </ListItem>
           <ListItem>
-            <Label>Practioner</Label>
+            <Label>Practitioner</Label>
             <Input
-              name="practioner"
+              name="practitioner"
               type="text"
-              placeholder="Practioner Name"
+              placeholder="Practitioner"
               required
-              {...register("practioner", {
+              {...register("practitioner", {
                 required: true,
                 maxLength: 45
               })}
             />
           </ListItem>
+                {/*
           <ListItem>
             <Label>Reason</Label>
             <Input
@@ -138,6 +146,7 @@ const AppointmentForm = ({ closeModal }) => {
               })}
             />
           </ListItem>
+    
           <ListItem>
             <Label>Date</Label>
             <DatePicker
@@ -150,6 +159,7 @@ const AppointmentForm = ({ closeModal }) => {
             <Label>Time</Label>
             <TimeRangePicker onChange={onChangeTime} value={selectedTime} />
           </ListItem>
+            */}
           <ListItem>
             <AddButton type="submit">Add To Calendar</AddButton>
           </ListItem>

@@ -1,4 +1,4 @@
-import {ADD_APPOINTMENT, SEARCH_APPOINTMENT} from "./appointmentTypes";
+import {ADD_APPOINTMENT, SEARCH_APPOINTMENT, DELETE_APPOINTMENT} from "./appointmentTypes";
 
 // Action creators list. All action creator functions are listed here.
 
@@ -19,3 +19,23 @@ export const search_appointment = (id) => {
         payload: id,
     }
 }
+
+export const deleteAppointment = (id) => {
+  // Call an action to delete the appointment from the Redux store
+  return dispatch => {
+    dispatch({
+      type: DELETE_APPOINTMENT,
+      payload: id
+    });
+
+    // Delete the appointment from local storage
+    if ("appointments" in localStorage) {
+      let localStorageArray = JSON.parse(localStorage.getItem("appointments"));
+      let updatedArray = localStorageArray.filter((appointment) => appointment.id !== id);
+      localStorage.setItem("appointments", JSON.stringify(updatedArray));
+    }
+
+    // Refresh the display by calling the search_appointment action with the same ID
+    dispatch(search_appointment(id));
+  }
+};

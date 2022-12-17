@@ -1,49 +1,45 @@
-import React from "react";
+import React, { useState } from 'react';
+import AsyncSelect from 'react-select/async';
 
-class GetPatient extends React.Component {
+const GetPatient = () => {
+  const [inputValue, setValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState(null);
+
+  // handle input change event
+  const handleInputChange = value => {
+    setValue(value);
+  };
+
+  // handle selection
+  const handleChange = value => {
+    setSelectedValue(value);
+  }
+
+
+  // load options using API call
+  const loadOptions = (inputValue) => {
+    return fetch(`http://localhost:3001/patient/name/${inputValue}`);
    
-    // Constructor 
-    constructor(props) {
-        super(props);
-   
-        this.state = {
-            items: [],
-            DataisLoaded: false
-        };
-    }
-   
-    // ComponentDidMount is used to
-    // execute the code
-    componentDidMount() {
-        fetch(
-"http://localhost:3001/patient/all/2")
-            .then((res) => res.json())
-            .then((json) => {
-                this.setState({
-                    items: json,
-                    DataisLoaded: true
-                });
-            })
-    }
-    render() {
-        const { DataisLoaded, items } = this.state;
-        if (!DataisLoaded) return <div>
-            <h1> Pleses wait some time.... </h1> </div> ;
-   
-        return (
-        <div className = "GetPatient">
-            <h1> Fetch data from an api in react </h1>  {
-                items.map((patient) => ( 
-                <ol key = { patient.patient_id } >
-                    Last_Name: { patient.name_last }, 
-                    First_Name: { patient.name_first }, 
-                    
-                    </ol>
-                ))
-            }
-        </div>
-    );
+  };
+  console.log(loadOptions);
+  return (
+    <div className="App">
+      
+      <pre>Input Value: "{inputValue}"</pre>
+      <AsyncSelect
+        cacheOptions
+        defaultOptions
+        value={selectedValue}
+        getOptionLabel={e => e.name_last}
+        getOptionValue={e => e.patient_id}
+        loadOptions={loadOptions}
+        onInputChange={handleInputChange}
+        onChange={handleChange}
+      />
+      <pre>Selected Value: {JSON.stringify(selectedValue || {}, null, 2)}</pre>
+    </div>
+  );
 }
-}
-   
+
 export default GetPatient;
+
